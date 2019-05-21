@@ -31,7 +31,7 @@
                                 <h1>Choisissez un/des auteurs</h1>
                                 @forelse($authors as $id => $name)
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="authors[]" id="authors{{$id}}" value="{{$id}}" {{ (!empty(old('authors'))) ? 'checked' : ''  }}>
+                                        <input class="form-check-input" type="checkbox" name="authors[]" id="authors{{$id}}" value="{{$id}}" {{ ( !empty(old('authors')) and in_array($id, old('authors')) ) ? 'checked' : ''  }}>
                                         <label class="form-check-label" for="author{{$id}}">{{$name}}</label>
                                     </div>
                                 @empty

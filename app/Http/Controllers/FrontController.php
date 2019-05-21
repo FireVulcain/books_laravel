@@ -23,9 +23,9 @@ class FrontController extends Controller {
         $path = 'book' . $prefix;
 
         $books = \Cache::remember($path, 60*24, function(){
+            //On enlève le préfixe scope de scopePublished
             return Book::published()->with('picture', 'authors')->paginate($this->paginate);
         });
-        //On enlève le préfixe scope de scopePublished
         return view('front.index', ['books' => $books]);
     }
     public function show(int $id){
