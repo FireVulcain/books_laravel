@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Author;
 use App\Book;
 use App\Genre;
+use App\Statistique;
 use Illuminate\Http\Request;
+
 
 class FrontController extends Controller {
     protected $paginate = 5;
@@ -22,11 +24,15 @@ class FrontController extends Controller {
         $prefix = request()->page?? 'home';
         $path = 'book' . $prefix;
 
-        $books = \Cache::remember($path, 60*24, function(){
-            //On enlève le préfixe scope de scopePublished
-            return Book::published()->with('picture', 'authors')->paginate($this->paginate);
-        });
-        return view('front.index', ['books' => $books]);
+        $bestNote = Book::bestRanking()->book_id;
+
+        $books = Book::published()->with('picture', 'authors')->where('id', '!=', $bestNote)->paginate($this->paginate);
+        $bestBooks = Book::published()->with('picture', 'authors')->where('id', '=', $bestNote)->paginate($this->paginate);
+
+        $statistiques = Statistique::all();
+
+
+        return view('front.index', ['books' => $books, 'bestBooks' => $bestBooks, 'statistiques' => $statistiques]);
     }
     public function show(int $id){
         $book = Book::find($id);
@@ -35,13 +41,14 @@ class FrontController extends Controller {
     }
 
     public function showBookByAuthor(int $id){
-        $books = Author::find($id)->books()->paginate($this->paginate);
+        $books = Author::find($id)->books()->published()->paginate($this->paginate);
+        $author= Author::find($id);
 
-        return view('front.author', ['books' => $books]);
+        return view('front.author', ['books' => $books, 'author' => $author]);
     }
 
     public function showBookByGenre(int $id){
-        $books = Genre::find($id)->books()->paginate($this->paginate);
+        $books = Genre::find($id)->books()->published()->paginate($this->paginate);
 
         return view('front.genre', ['books' => $books]);
     }

@@ -16,7 +16,9 @@ class CreateAuthorBookTable extends Migration
         Schema::create('author_book', function (Blueprint $table) {
             $table->unsignedInteger('author_id');
             $table->unsignedInteger('book_id');
-            $table->unsignedDecimal('note', 3,1)->nullable();
+            $table->unsignedDecimal('note', 3,1)->default(10);
+            $table->enum('status', ['published', 'unpublished'])->default('published');
+
 
             // On met une cascade si on supprime un auteurs on supprime les informations dans la table de liaison
             // Si un auteur disparaît de la base de données l'information dans la table de liaison n'a plus de sens.

@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Author;
 use App\Book;
 use App\Genre;
+use App\Statistique;
 use Illuminate\Http\Request;
+
+use DB;
 
 class BookController extends Controller {
     protected $paginate = 10;
@@ -50,12 +53,19 @@ class BookController extends Controller {
         ]);
 
         $book = Book::create($request->all());
+        $book->authors()->attach($request->authors, ['status' => $request->status]);
 
-        $book->authors()->attach($request->authors);
+        Statistique::truncate()->insert([
+            [
+                'nb_book' => Book::numberBook()->number,
+                'best_note' => Book::bestRanking()->note_avg,
+                'nb_author' => Book::numberAuthor()->number
+            ]
+        ]);
 
-        $im = $request->file('picture');
-        if(!empty($im)){
-            $link = $im->store('images');
+        $img = $request->file('picture');
+        if(!empty($img)){
+            $link = $img->store('images');
             $book->picture()->create([
                 'link' => $link,
                 'title' => $request->title_image?? $request->title
@@ -111,11 +121,12 @@ class BookController extends Controller {
 
         $book = Book::find($id);
         $book->update($request->all());
-        $book->authors()->sync($request->authors); // Synchroniser les données dans la table de liaison
+        $book->authors()->sync($request->authors);
+        DB::table('author_book')->where('book_id', $id)->update(['status' => $request->status]);
 
-        $im = $request->file('picture');
-        if(!empty($im)){
-            $link = $im->store('images');
+        $img = $request->file('picture');
+        if(!empty($img)){
+            $link = $img->store('images');
             if(count((array) $book->picture) > 0){
                 \Storage::disk('local')->delete($book->picture->link);
                 $book->picture()->delete();

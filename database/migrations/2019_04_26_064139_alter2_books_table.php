@@ -14,7 +14,7 @@ class Alter2BooksTable extends Migration
     public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->enum('status', ['published', 'unpublished'])->default('unpublished');
+            $table->enum('status', ['published', 'unpublished'])->default('published');
         });
     }
 

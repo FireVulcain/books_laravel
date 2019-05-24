@@ -3,7 +3,7 @@
         <div class="col-md-9">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">{{config('app.name')}}</a>
+                    <a class="nav-link" href="{{url('/')}}">{{config('app.name')}}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="{{url('/')}}">Accueil</a>

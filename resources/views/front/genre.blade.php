@@ -30,7 +30,7 @@
             </li>
 
         @empty
-            <li>Désolé pour l'instant aucun livre n'est publié sur le site</li>
+            <li>Désolé pour l'instant aucun livre n'est publié sur le site pour cette catégorie</li>
         @endforelse
     </ul>
     <br>

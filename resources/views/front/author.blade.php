@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    <h1>Tous les livres de l'auteur : </h1>
+    <h1>Tous les livres de : {{$author->name}}</h1>
     {{$books->links()}}
     <ul class="list-group">
         @forelse($books as $book)
